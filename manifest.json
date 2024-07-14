@@ -3,9 +3,12 @@
   "name": "Video Analytics",
   "version": "1.0",
   "description": "Analytics for all videos watched",
-  "permissions": ["activeTab", "storage"],
+  "permissions": ["activeTab", "storage", "tabs"],
   "action": {
     "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {

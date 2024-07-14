@@ -48,7 +48,7 @@ function updateStorage() {
         accumulatedTime = 0;
         actualTimeWatched = 0;
 
-        console.log('Storage updated', videoWatchHistory);
+        console.log('Watchtime history updated', videoWatchHistory);
     });
 }
 
@@ -85,14 +85,17 @@ function handleTimeUpdate(event) {
 
 // Attaches necessary event listeners to a video element.
 function attachListenersToVideo(video) {
-    video.addEventListener('timeupdate', handleTimeUpdate);
-    video.addEventListener('play', function () {
-        lastActualTimeUpdate = Date.now() / 1000; // Update the last actual time on play.
-    });
-    video.addEventListener('pause', function () {
-        const currentActualTime = Date.now() / 1000;
-        actualTimeWatched += currentActualTime - lastActualTimeUpdate; // Update watched time on pause.
-    });
+    if (!video.hasAttribute('data-tracked')) {
+        video.addEventListener('timeupdate', handleTimeUpdate);
+        video.addEventListener('play', function () {
+            lastActualTimeUpdate = Date.now() / 1000; // Update the last actual time on play.
+        });
+        video.addEventListener('pause', function () {
+            const currentActualTime = Date.now() / 1000;
+            actualTimeWatched += currentActualTime - lastActualTimeUpdate; // Update watched time on pause.
+        });
+        video.setAttribute('data-tracked', 'true');
+    }
 }
 
 // Initializes video tracking by setting up storage and attaching event listeners to all video elements.
@@ -111,7 +114,6 @@ function initializeTracking() {
             if (mutation.type === 'childList') {
                 mutation.addedNodes.forEach(function (node) {
                     if (node.nodeName === 'VIDEO') {
-                        console.log('New video element found', node);
                         attachListenersToVideo(node);
                     }
                 });
@@ -124,16 +126,25 @@ function initializeTracking() {
 
 // Checks for video elements on the page and initializes tracking if found. If not, retries after a delay.
 function checkForVideos() {
-    if (document.getElementsByTagName('video').length > 0) {
+    const videos = document.getElementsByTagName('video');
+    if (videos.length > 0) {
         initializeTracking();
     } else {
-        setTimeout(checkForVideos, 1000); // Retry after 1 second if no videos are found initially.
+        setTimeout(checkForVideos, 5000); // Retry after 5 second if no videos are found.
     }
 }
 
-// Start the video tracking process once the page has loaded or immediately if the page is already loaded.
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', checkForVideos);
-} else {
+function startTracking() {
     checkForVideos();
 }
+
+// Listen for messages from the background script
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'checkForVideo') {
+        startTracking();
+    }
+});
+
+// We don't automatically start tracking anymore.
+// Instead, we wait for a signal from the background script.
+console.log('Content script loaded, waiting for background script signal');

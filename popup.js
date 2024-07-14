@@ -30,17 +30,17 @@ function updatePopup() {
             row.insertCell(0).textContent = date;
             row.insertCell(1).textContent = formatTime(stats.durationWatched);
             row.insertCell(2).textContent = formatTime(stats.actualTimeWatched);
-        //     add a cell for the time saved in percentage format
-            row.insertCell(3).textContent = `${((stats.durationWatched - stats.actualTimeWatched) / stats.durationWatched * 100).toFixed(2)}%`;
+            const timeSaved = stats.durationWatched - stats.actualTimeWatched;
+            const timeSavedPercentage = (timeSaved / stats.durationWatched * 100).toFixed(2);
+            row.insertCell(3).textContent = `${formatTime(timeSaved)} (${timeSavedPercentage}%)`;
         });
 
         const timeSaved = totalDuration - totalActual;
         const timeSavedPercentage = (timeSaved / totalDuration * 100).toFixed(2);
-
         document.getElementById('totalStats').innerHTML = `
             <p>Total Duration Watched: ${formatTime(totalDuration)}</p>
             <p>Total Actual Time Watched: ${formatTime(totalActual)}</p>
-            <p>Time Saved: ${timeSavedPercentage}%</p>
+            <p>Time Saved: ${formatTime(timeSaved)} (${timeSavedPercentage}%)</p>
         `;
     });
 }

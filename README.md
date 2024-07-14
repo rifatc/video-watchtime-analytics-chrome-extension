@@ -38,7 +38,8 @@ After installation:
 - Total actual time watched
 - Percentage of actual time watched compared to content duration
 - A table with daily statistics
-<img width="481" alt="image" src="https://github.com/user-attachments/assets/a947d976-ff08-4012-a0f3-2e3e2c12c840">
+<img width="481" alt="image" src="https://github.com/user-attachments/assets/c42d2554-587b-4a4d-aa4d-05fbda6c3469">
+
 
 
 

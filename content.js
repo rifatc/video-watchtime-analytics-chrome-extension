@@ -3,7 +3,11 @@
 
 // Returns today's date in YYYY-MM-DD format.
 function getTodayDate() {
-    return new Date().toISOString().split('T')[0];
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
 
 // Initializes or updates the local storage with an entry for today if it doesn't exist.
@@ -48,7 +52,7 @@ function updateStorage() {
         accumulatedTime = 0;
         actualTimeWatched = 0;
 
-        console.log('Watchtime history updated', videoWatchHistory);
+        console.log('Watchtime history updated', videoWatchHistory[today]);
     });
 }
 

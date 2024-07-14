@@ -38,7 +38,7 @@ function updatePopup() {
         const timeSaved = totalDuration - totalActual;
         const timeSavedPercentage = (timeSaved / totalDuration * 100).toFixed(2);
         document.getElementById('totalStats').innerHTML = `
-            <p>Total Duration Watched: ${formatTime(totalDuration)}</p>
+            <p>Total Time Watched: ${formatTime(totalDuration)}</p>
             <p>Total Actual Time Watched: ${formatTime(totalActual)}</p>
             <p>Time Saved: ${formatTime(timeSaved)} (${timeSavedPercentage}%)</p>
         `;

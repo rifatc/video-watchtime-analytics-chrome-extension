@@ -1,4 +1,5 @@
-// This script is designed to track and store the amount of time a user spends watching videos on a webpage. It uses Chrome's local storage to keep a record of the total duration watched and the actual time spent watching videos for each day.
+// This script is designed to track and store the amount of time a user spends watching videos on a webpage. 
+// It uses Chrome's local storage to keep a record of the total duration watched and the actual time spent watching videos for each day.
 
 // Returns today's date in YYYY-MM-DD format.
 function getTodayDate() {

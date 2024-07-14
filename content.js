@@ -111,6 +111,7 @@ function initializeTracking() {
             if (mutation.type === 'childList') {
                 mutation.addedNodes.forEach(function (node) {
                     if (node.nodeName === 'VIDEO') {
+                        console.log('New video element found', node);
                         attachListenersToVideo(node);
                     }
                 });

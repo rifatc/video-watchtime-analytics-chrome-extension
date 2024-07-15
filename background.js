@@ -23,4 +23,4 @@ setInterval(() => {
     chrome.tabs.query({}, (tabs) => {
         tabs.forEach(tab => checkTabForVideo(tab.id));
     });
-}, 5000);  // Check every 5 seconds
+}, 10000);  // Check every 10 seconds

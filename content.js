@@ -80,8 +80,8 @@ function handleTimeUpdate(event) {
     lastUpdateTime = currentTime;
     lastActualTimeUpdate = currentActualTime;
 
-    // Periodically update the storage every 5 seconds.
-    if (Date.now() - lastStorageUpdateTime >= 5000) {
+    // Periodically update the storage every 10 seconds.
+    if (Date.now() - lastStorageUpdateTime >= 10000) {
         updateStorage();
         lastStorageUpdateTime = Date.now();
     }
@@ -134,7 +134,7 @@ function checkForVideos() {
     if (videos.length > 0) {
         initializeTracking();
     } else {
-        setTimeout(checkForVideos, 5000); // Retry after 5 second if no videos are found.
+        setTimeout(checkForVideos, 10000); // Retry after 10 second if no videos are found.
     }
 }
 

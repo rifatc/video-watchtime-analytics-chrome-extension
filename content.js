@@ -80,8 +80,8 @@ function handleTimeUpdate(event) {
     lastUpdateTime = currentTime;
     lastActualTimeUpdate = currentActualTime;
 
-    // Periodically update the storage every 10 seconds.
-    if (Date.now() - lastStorageUpdateTime >= 10000) {
+    // Periodically update the storage every 30 seconds.
+    if (Date.now() - lastStorageUpdateTime >= 30000) {
         updateStorage();
         lastStorageUpdateTime = Date.now();
     }
@@ -126,6 +126,11 @@ function initializeTracking() {
     });
 
     observer.observe(document.body, {childList: true, subtree: true});
+
+    // Add event listener to save data before tab is closed
+    window.addEventListener('beforeunload', function() {
+        updateStorage();
+    });
 }
 
 // Checks for video elements on the page and initializes tracking if found. If not, retries after a delay.

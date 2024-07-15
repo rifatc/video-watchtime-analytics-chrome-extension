@@ -97,6 +97,7 @@ function attachListenersToVideo(video) {
         video.addEventListener('pause', function () {
             const currentActualTime = Date.now() / 1000;
             actualTimeWatched += currentActualTime - lastActualTimeUpdate; // Update watched time on pause.
+            updateStorage();
         });
         video.setAttribute('data-tracked', 'true');
     }

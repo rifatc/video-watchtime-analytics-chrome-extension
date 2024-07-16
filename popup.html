@@ -1,56 +1,68 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Video Watchtime Statistics</title>
-    <style>
-        body {
-            width: 300px;
-            padding: 10px;
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-        }
+    <head>
+        <title>Video Watchtime Statistics</title>
+        <style>
+            body {
+                width: 300px;
+                padding: 10px;
+                font-family: Arial, sans-serif;
+                font-size: 12px;
+            }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
 
-        th {
-            background-color: #f2f2f2;
-        }
+            th {
+                background-color: #f2f2f2;
+            }
 
-        .h2-container {
-            display: flex;
-            align-items: center;
-        }
+            .h2-container {
+                display: flex;
+                align-items: center;
+            }
 
-        .h2-icon {
-            height: 24px; /* Adjust based on your h2 size */
-            margin-right: 10px; /* Space between icon and text */
-        }
-    </style>
-</head>
-<body>
-<div class="h2-container">
-    <img src="icons/icon128.png" alt="Icon" class="h2-icon">
-    <h2>Video Watchtime Statistics</h2>
-</div>
-<div id="totalStats"></div>
-<table id="historyTable">
-    <tr>
-        <th>Date</th>
-        <th>Time Watched</th>
-        <th>Actual Time Watched</th>
-        <th>Time Saved</th>
-    </tr>
-</table>
-<script src="popup.js"></script>
-</body>
+            .h2-icon {
+                height: 24px; /* Adjust based on your h2 size */
+                margin-right: 10px; /* Space between icon and text */
+            }
+
+            #pagination {
+                margin-top: 10px;
+                text-align: center;
+                font-size: 12px;
+            }
+
+            #pagination button {
+                margin: 0 5px;
+                font-size: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="h2-container">
+            <img src="icons/icon128.png" alt="Icon" class="h2-icon">
+            <h2>Video Watchtime Statistics</h2>
+        </div>
+        <div id="totalStats"></div>
+        <table id="historyTable">
+            <tr>
+                <th>Date</th>
+                <th>Time Watched</th>
+                <th>Actual Time Watched</th>
+                <th>Time Saved</th>
+            </tr>
+        </table>
+        <div id="pagination"></div>
+        <script src="popup.js"></script>
+    </body>
 </html>

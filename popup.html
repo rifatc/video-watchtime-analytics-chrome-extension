@@ -9,23 +9,39 @@
             font-family: Arial, sans-serif;
             font-size: 12px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
         }
+
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
+
         th {
             background-color: #f2f2f2;
+        }
+
+        .h2-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .h2-icon {
+            height: 24px; /* Adjust based on your h2 size */
+            margin-right: 10px; /* Space between icon and text */
         }
     </style>
 </head>
 <body>
-<h2>Video Watchtime Statistics</h2>
+<div class="h2-container">
+    <img src="icons/icon128.png" alt="Icon" class="h2-icon">
+    <h2>Video Watchtime Statistics</h2>
+</div>
 <div id="totalStats"></div>
 <table id="historyTable">
     <tr>

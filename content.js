@@ -52,7 +52,7 @@ function updateStorage() {
         accumulatedTime = 0;
         actualTimeWatched = 0;
 
-        console.log('Watchtime history updated', videoWatchHistory[today]);
+        console.log('Watchtime history updated at', new Date(), videoWatchHistory[today]);
     });
 }
 

@@ -5,105 +5,107 @@
         <style>
             body {
                 width: 300px;
-                padding: 6px;
+                padding: 12px;
                 font-family: Arial, sans-serif;
                 font-size: 12px;
-                background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
-                color: #333;
+                background: #faf6f1;
+                color: #2c1810;
             }
 
             table {
                 width: 100%;
                 border-collapse: collapse;
-                margin-top: 6px;
-                background-color: #ffffff;
-                border-radius: 8px;
+                margin-top: 12px;
+                background-color: #faf6f1;
+                border-radius: 12px;
                 overflow: hidden;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                box-shadow: 9px 9px 16px rgba(165, 142, 119, 0.3), -9px -9px 16px rgba(255, 255, 255, 0.8);
             }
 
             th, td {
                 border: none;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-                padding: 8px;
+                border-bottom: 1px solid rgba(163,177,198,0.2);
+                padding: 12px;
                 text-align: left;
             }
 
             th {
-                background: #f0f0f0;
-                color: #333;
-                font-weight: 500;
+                background: #faf6f1;
+                color: #2c1810;
+                font-weight: 600;
+                box-shadow: inset 3px 3px 7px rgba(165, 142, 119, 0.3), inset -3px -3px 7px rgba(255, 255, 255, 0.8);
             }
 
             #pagination button {
-                margin: 0 3px;
+                margin: 0 6px;
                 font-size: 12px;
-                padding: 4px 8px;
+                padding: 8px 16px;
                 border: none;
-                border-radius: 4px;
-                background: linear-gradient(135deg, #e8e8e8 0%, #d8d8d8 100%);
-                color: #333;
+                border-radius: 8px;
+                background: #faf6f1;
+                color: #2c1810;
                 cursor: pointer;
                 transition: all 0.3s;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+                box-shadow: 9px 9px 16px rgba(165, 142, 119, 0.3), -9px -9px 16px rgba(255, 255, 255, 0.8);
+            }
+
+            #pagination button:active {
+                box-shadow: inset 3px 3px 7px rgba(165, 142, 119, 0.3), inset -3px -3px 7px rgba(255, 255, 255, 0.8);
             }
 
             .icon-button {
-                width: 28px;
-                height: 28px;
-                border-radius: 6px;
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
                 border: none;
-                background: linear-gradient(135deg, #e8e8e8 0%, #d8d8d8 100%);
+                background: #faf6f1;
                 cursor: pointer;
-                padding: 3px;
+                padding: 8px;
                 transition: all 0.3s;
-                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+                box-shadow: 9px 9px 16px rgba(165, 142, 119, 0.3), -9px -9px 16px rgba(255, 255, 255, 0.8);
             }
-            
+
             .icon-button:hover {
-                background: linear-gradient(135deg, #d8d8d8 0%, #c8c8c8 100%);
-                transform: translateY(-1px);
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                box-shadow: 6px 6px 10px rgba(165, 142, 119, 0.3), -6px -6px 10px rgba(255, 255, 255, 0.8);
             }
-            
+
+            .icon-button:active {
+                box-shadow: inset 3px 3px 7px rgba(165, 142, 119, 0.3), inset -3px -3px 7px rgba(255, 255, 255, 0.8);
+            }
+
             .icon-button svg {
-                width: 16px;
-                height: 16px;
+                width: 20px;
+                height: 20px;
                 fill: #333;
             }
-            
-            .button-tooltip {
-                position: relative;
-                display: inline-block;
-            }
-            
+
             .button-tooltip .tooltip-text {
                 visibility: hidden;
-                width: 80px;
-                background-color: #f0f0f0;
-                color: #fff;
+                width: 90px;
+                background: #faf6f1;
+                color: #2c1810;
                 text-align: center;
-                border-radius: 4px;
-                padding: 5px;
+                border-radius: 8px;
+                padding: 8px;
                 position: absolute;
                 z-index: 1;
                 bottom: 125%;
                 left: 50%;
-                margin-left: -40px;
+                margin-left: -45px;
                 opacity: 0;
                 transition: opacity 0.3s;
-                font-size: 10px;
+                font-size: 11px;
+                box-shadow: 9px 9px 16px rgba(165, 142, 119, 0.3), -9px -9px 16px rgba(255, 255, 255, 0.8);
             }
-            
-            .button-tooltip:hover .tooltip-text {
-                visibility: visible;
-                opacity: 1;
-            }
+
             .h2-container {
                 display: flex;
                 align-items: center;
-                gap: 8px;
-                margin-bottom: 12px;
+                gap: 12px;
+                margin-bottom: 16px;
+                padding: 12px;
+                border-radius: 12px;
+                box-shadow: 9px 9px 16px rgba(165, 142, 119, 0.3), -9px -9px 16px rgba(255, 255, 255, 0.8);
             }
             
             .h2-icon {

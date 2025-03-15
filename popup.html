@@ -102,7 +102,7 @@
                 display: flex;
                 align-items: center;
                 gap: 8px;
-                margin-bottom: 16px;
+                margin-bottom: 12px;
                 padding: 12px 6px;
                 border-radius: 12px;
                 box-shadow: 9px 9px 16px rgba(165, 142, 119, 0.3), -9px -9px 16px rgba(255, 255, 255, 0.8);
@@ -129,7 +129,7 @@
                 background: #faf6f1;
                 border-radius: 12px;
                 padding: 12px;
-                margin-bottom: 16px;
+                margin-bottom: 12px;
                 box-shadow: 9px 9px 16px rgba(165, 142, 119, 0.3), -9px -9px 16px rgba(255, 255, 255, 0.8);
             }
 
@@ -141,25 +141,25 @@
             .action-links {
                 display: flex;
                 flex-direction: row;
-                justify-content: center;
-                gap: 24px;
+                justify-content: space-between;
                 margin-top: 16px;
-                padding: 8px 16px;
+                padding: 12px 24px;
                 border-radius: 12px;
                 box-shadow: 9px 9px 16px rgba(165, 142, 119, 0.3), -9px -9px 16px rgba(255, 255, 255, 0.8);
-                white-space: nowrap;
             }
     
             .action-link {
                 display: inline-flex;
                 align-items: center;
+                justify-content: center;
                 gap: 8px;
                 text-decoration: none;
                 color: #2c1810;
-                padding: 8px;
+                padding: 10px 16px;
                 border-radius: 8px;
                 transition: all 0.3s;
-                flex-shrink: 0;
+                flex: 1;
+                max-width: 45%;
             }
     
             .action-link:hover {

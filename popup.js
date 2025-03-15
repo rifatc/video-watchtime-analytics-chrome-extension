@@ -93,10 +93,121 @@ function updatePaginationControls() {
     });
 }
 
+function exportToCSV() {
+    chrome.storage.local.get(['videoWatchHistory'], function(result) {
+        const history = result.videoWatchHistory || {};
+        
+        // Sort dates in descending order
+        const sortedDates = Object.keys(history).sort((a, b) => new Date(b) - new Date(a));
+        
+        // Create CSV header
+        let csvContent = 'Date,Duration Watched,Actual Time Watched,Time Saved,Time Saved Percentage\n';
+        
+        // Add data rows
+        sortedDates.forEach(date => {
+            const stats = history[date];
+            const timeSaved = stats.durationWatched - stats.actualTimeWatched;
+            const timeSavedPercentage = (timeSaved / stats.durationWatched * 100).toFixed(2);
+            
+            // Format raw seconds for CSV (we want raw numbers for better data analysis)
+            csvContent += `${date},${stats.durationWatched},${stats.actualTimeWatched},${timeSaved},${timeSavedPercentage}%\n`;
+        });
+        
+        // Create a blob and download link
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', `video_watch_history_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+}
+
+function importFromCSV() {
+    const fileInput = document.getElementById('importFile');
+    fileInput.click();
+    
+    fileInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const csvContent = e.target.result;
+                const lines = csvContent.split('\n');
+                
+                // Skip header line
+                if (lines.length < 2) {
+                    alert('Invalid CSV file format');
+                    return;
+                }
+                
+                // Get existing history
+                chrome.storage.local.get(['videoWatchHistory'], function(result) {
+                    let videoWatchHistory = result.videoWatchHistory || {};
+                    let importCount = 0;
+                    
+                    // Process each line (skip header)
+                    for (let i = 1; i < lines.length; i++) {
+                        const line = lines[i].trim();
+                        if (!line) continue;
+                        
+                        const values = line.split(',');
+                        if (values.length < 3) continue;
+                        
+                        const date = values[0];
+                        const durationWatched = parseFloat(values[1]);
+                        const actualTimeWatched = parseFloat(values[2]);
+                        
+                        // Validate data
+                        if (isNaN(durationWatched) || isNaN(actualTimeWatched) || !date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                            continue;
+                        }
+                        
+                        // Update or create entry
+                        if (!videoWatchHistory[date]) {
+                            videoWatchHistory[date] = {
+                                durationWatched: 0,
+                                actualTimeWatched: 0
+                            };
+                        }
+                        
+                        // Add imported values to existing values
+                        videoWatchHistory[date].durationWatched += durationWatched;
+                        videoWatchHistory[date].actualTimeWatched += actualTimeWatched;
+                        importCount++;
+                    }
+                    
+                    // Save updated history
+                    chrome.storage.local.set({videoWatchHistory: videoWatchHistory}, function() {
+                        alert(`Successfully imported ${importCount} records`);
+                        updatePopup(); // Refresh the display
+                    });
+                });
+            } catch (error) {
+                alert('Error importing data: ' + error.message);
+                console.error('Import error:', error);
+            }
+        };
+        
+        reader.readAsText(file);
+        // Reset the file input so the same file can be selected again
+        fileInput.value = '';
+    }, {once: true}); // Use once:true to prevent multiple event handlers
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     updatePopup();
     // Add pagination controls to the DOM
     const paginationDiv = document.createElement('div');
     paginationDiv.id = 'pagination';
     document.body.appendChild(paginationDiv);
+    
+    // Add event listeners for export and import buttons
+    document.getElementById('exportBtn').addEventListener('click', exportToCSV);
+    document.getElementById('importBtn').addEventListener('click', importFromCSV);
 });

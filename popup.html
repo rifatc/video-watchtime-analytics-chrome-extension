@@ -46,6 +46,58 @@
                 margin: 0 5px;
                 font-size: 10px;
             }
+            
+            .icon-button {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 32px;
+                height: 32px;
+                border-radius: 4px;
+                border: 1px solid #ddd;
+                background-color: #f8f8f8;
+                cursor: pointer;
+                padding: 4px;
+                transition: background-color 0.2s;
+            }
+            
+            .icon-button:hover {
+                background-color: #e8e8e8;
+            }
+            
+            .icon-button svg {
+                width: 16px;
+                height: 16px;
+                fill: #555;
+            }
+            
+            .button-tooltip {
+                position: relative;
+                display: inline-block;
+            }
+            
+            .button-tooltip .tooltip-text {
+                visibility: hidden;
+                width: 80px;
+                background-color: #555;
+                color: #fff;
+                text-align: center;
+                border-radius: 4px;
+                padding: 5px;
+                position: absolute;
+                z-index: 1;
+                bottom: 125%;
+                left: 50%;
+                margin-left: -40px;
+                opacity: 0;
+                transition: opacity 0.3s;
+                font-size: 10px;
+            }
+            
+            .button-tooltip:hover .tooltip-text {
+                visibility: visible;
+                opacity: 1;
+            }
         </style>
     </head>
     <body>
@@ -54,6 +106,27 @@
             <h2>Video Watchtime Statistics</h2>
         </div>
         <div id="totalStats"></div>
+        <div id="controls" style="margin-top: 10px; margin-bottom: 10px; display: flex; justify-content: space-between;">
+            <div class="button-tooltip">
+                <button id="exportBtn" class="icon-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 12l-4-4h2.5V3h3v5H12L8 12z"/>
+                        <path d="M14 13v1H2v-1h12z"/>
+                    </svg>
+                </button>
+                <span class="tooltip-text">Export to CSV</span>
+            </div>
+            <div class="button-tooltip">
+                <button id="importBtn" class="icon-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 4l4 4h-2.5v5h-3V8H4l4-4z"/>
+                        <path d="M14 13v1H2v-1h12z"/>
+                    </svg>
+                </button>
+                <span class="tooltip-text">Import from CSV</span>
+            </div>
+            <input type="file" id="importFile" accept=".csv" style="display: none;">
+        </div>
         <table id="historyTable">
             <tr>
                 <th>Date</th>

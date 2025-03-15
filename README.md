@@ -1,6 +1,7 @@
 # Video Watch Time Tracker
 
 This Chrome extension tracks the time you spend watching videos across different websites. It records both the duration of the video content watched and the actual time spent watching, accounting for playback speed and pauses.
+<img width="459" alt="image" src="https://github.com/user-attachments/assets/552dc55f-2de1-4eaf-b23f-081b2776aa80" />
 
 ## Features
 
@@ -43,12 +44,6 @@ After installation:
 - Export your watch history to a CSV file by clicking the "Export to CSV" button
 - Import previously exported data by clicking the "Import from CSV" button
 - The CSV file contains daily statistics including dates, time watched, actual time watched, and time saved
-  
-<img width="459" alt="image" src="https://github.com/user-attachments/assets/552dc55f-2de1-4eaf-b23f-081b2776aa80" />
-
-
-
-
 
 ## Files
 

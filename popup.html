@@ -124,6 +124,20 @@
                 align-items: center;
                 margin-top: 8px;
             }
+
+            .stats-card {
+                background: #faf6f1;
+                border-radius: 12px;
+                padding: 12px;
+                margin-bottom: 16px;
+                box-shadow: 9px 9px 16px rgba(165, 142, 119, 0.3), -9px -9px 16px rgba(255, 255, 255, 0.8);
+            }
+
+            .stats-card p {
+                margin: 8px 0;
+                font-size: 13px;
+                color: #2c1810;
+            }
         </style>
     </head>
     <body>
@@ -131,7 +145,7 @@
             <img src="icons/icon128.png" alt="Icon" class="h2-icon">
             <h2>Video Watchtime Statistics</h2>
         </div>
-        <div id="totalStats"></div>
+        <div id="totalStats" class="stats-card"></div>
         <div id="controls" style="margin: 6px 4px; display: flex; justify-content: space-between;">
             <div class="button-tooltip">
                 <button id="exportBtn" class="icon-button">

@@ -38,6 +38,11 @@ After installation:
 - Total actual time watched
 - Percentage of actual time watched compared to content duration
 - A table with daily statistics
+
+4. Data Management:
+- Export your watch history to a CSV file by clicking the "Export to CSV" button
+- Import previously exported data by clicking the "Import from CSV" button
+- The CSV file contains daily statistics including dates, time watched, actual time watched, and time saved
 <img width="481" alt="image" src="https://github.com/user-attachments/assets/c42d2554-587b-4a4d-aa4d-05fbda6c3469">
 
 

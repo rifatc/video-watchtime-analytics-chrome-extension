@@ -152,7 +152,7 @@
                 gap: 8px;
                 text-decoration: none;
                 color: #e0e0e0;
-                padding: 10px 16px;
+                padding: 10px 10px;
                 border-radius: 8px;
                 transition: all 0.3s;
                 flex: 1;
@@ -172,6 +172,20 @@
                 height: 16px;
                 fill: #e0e0e0;
             }
+
+            .action-buttons {
+                display: flex;
+                justify-content: space-between;
+                gap: 10px;
+                margin-top: 12px;
+            }
+
+            .action-buttons .action-link {
+                flex: 1;
+                max-width: none;
+                margin-top: 0;
+                text-align: center;
+            }
         </style>
     </head>
     <body>
@@ -190,6 +204,7 @@
         </table>
         <div id="pagination"></div>
 
+        <div class="action-buttons">
             <a href="#" id="exportBtn" class="action-link">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                     <path d="M8 12l-4-4h2.5V3h3v5H12L8 12z"/>

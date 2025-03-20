@@ -1,7 +1,8 @@
 # Video Watch Time Tracker
 
 This Chrome extension tracks the time you spend watching videos across different websites. It records both the duration of the video content watched and the actual time spent watching, accounting for playback speed and pauses.
-<img width="459" alt="image" src="https://github.com/user-attachments/assets/552dc55f-2de1-4eaf-b23f-081b2776aa80" />
+<img width="459" alt="image" src="https://github.com/user-attachments/assets/43922431-aac1-44c0-a392-bf8a936049e5" />
+
 
 ## Features
 

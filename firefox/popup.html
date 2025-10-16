@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Video Watchtime Statistics</title>
+        <style>
+            body {
+                width: 300px;
+                padding: 8px 8px;
+                font-family: Arial, sans-serif;
+                font-size: 12px;
+                background: #1e1e24;
+                color: #e0e0e0;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 8px;
+                background-color: #252530;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: inset 3px 3px 7px rgba(0, 0, 0, 0.5), inset -3px -3px 7px rgba(70, 70, 90, 0.3);
+                padding: 12px;
+            }
+
+            th, td {
+                border: none;
+                border-bottom: 1px solid rgba(70, 70, 90, 0.3);
+                padding: 8px 6px;
+                text-align: left;
+            }
+
+            th {
+                background: #2a2a35;
+                color: #e0e0e0;
+                font-weight: 600;
+                box-shadow: inset 3px 3px 7px rgba(0, 0, 0, 0.5), inset -3px -3px 7px rgba(70, 70, 90, 0.3);
+            }
+
+            #pagination button {
+                margin: 0 6px;
+                font-size: 12px;
+                padding: 8px 16px;
+                border: none;
+                border-radius: 8px;
+                background: #2a2a35;
+                color: #e0e0e0;
+                cursor: pointer;
+                transition: all 0.3s;
+                box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5), -4px -4px 8px rgba(70, 70, 90, 0.3);
+            }
+
+            #pagination button:hover {
+                background: #323245;
+                box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5), -3px -3px 5px rgba(70, 70, 90, 0.3);
+            }
+
+            #pagination button:active {
+                box-shadow: inset 3px 3px 7px rgba(0, 0, 0, 0.5), inset -3px -3px 7px rgba(70, 70, 90, 0.3);
+            }
+
+            .icon-button {
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+                border: none;
+                background: #2a2a35;
+                cursor: pointer;
+                padding: 8px;
+                transition: all 0.3s;
+                box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5), -4px -4px 8px rgba(70, 70, 90, 0.3);
+            }
+
+            .icon-button:hover {
+                box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5), -3px -3px 5px rgba(70, 70, 90, 0.3);
+            }
+
+            .icon-button:active {
+                box-shadow: inset 3px 3px 7px rgba(0, 0, 0, 0.5), inset -3px -3px 7px rgba(70, 70, 90, 0.3);
+            }
+
+            .icon-button svg {
+                width: 20px;
+                height: 20px;
+                fill: #e0e0e0;
+            }
+
+            .button-tooltip .tooltip-text {
+                visibility: hidden;
+                width: 90px;
+                background: #2a2a35;
+                color: #e0e0e0;
+                text-align: center;
+                border-radius: 8px;
+                padding: 8px;
+                position: absolute;
+                z-index: 1;
+                bottom: 125%;
+                left: 50%;
+                margin-left: -45px;
+                opacity: 0;
+                transition: opacity 0.3s;
+                font-size: 11px;
+                box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5), -4px -4px 8px rgba(70, 70, 90, 0.3);
+            }
+
+            .h2-container {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 12px;
+                padding: 12px 6px;
+                border-radius: 12px;
+                box-shadow: inset 3px 3px 7px rgba(0, 0, 0, 0.5), inset -3px -3px 7px rgba(70, 70, 90, 0.3);
+            }
+
+            .h2-icon {
+                width: 24px;
+                height: 24px;
+            }
+
+            h2 {
+                margin: 0;
+                font-size: 16px;
+            }
+
+            #pagination {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 8px;
+            }
+
+            .stats-card {
+                background: #252530;
+                border-radius: 12px;
+                padding: 12px;
+                margin-bottom: 12px;
+                box-shadow: inset 3px 3px 7px rgba(0, 0, 0, 0.5), inset -3px -3px 7px rgba(70, 70, 90, 0.3);
+            }
+
+            .stats-card p {
+                margin: 8px 0;
+                font-size: 13px;
+                color: #e0e0e0;
+            }
+
+            .action-link {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                text-decoration: none;
+                color: #e0e0e0;
+                padding: 10px 10px;
+                border-radius: 8px;
+                transition: all 0.3s;
+                flex: 1;
+                max-width: 45%;
+                margin-top: 12px;
+                background: #2a2a35;
+                box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5), -4px -4px 8px rgba(70, 70, 90, 0.3);
+            }
+
+            .action-link:hover {
+                background: #323245;
+                box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5), -3px -3px 5px rgba(70, 70, 90, 0.3);
+            }
+
+            .action-link svg {
+                width: 16px;
+                height: 16px;
+                fill: #e0e0e0;
+            }
+
+            .action-buttons {
+                display: flex;
+                justify-content: space-between;
+                gap: 10px;
+                margin-top: 12px;
+            }
+
+            .action-buttons .action-link {
+                flex: 1;
+                max-width: none;
+                margin-top: 0;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="h2-container">
+            <img src="icons/icon128.png" alt="Icon" class="h2-icon">
+            <h2>Video Watchtime Statistics</h2>
+        </div>
+        <div id="totalStats" class="stats-card"></div>
+        <table id="historyTable">
+            <tr>
+                <th>Date</th>
+                <th>Time Watched</th>
+                <th>Actual Time Watched</th>
+                <th>Time Saved</th>
+            </tr>
+        </table>
+        <div id="pagination"></div>
+
+        <div class="action-buttons">
+            <a href="#" id="exportBtn" class="action-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                    <path d="M8 12l-4-4h2.5V3h3v5H12L8 12z"/>
+                    <path d="M14 13v1H2v-1h12z"/>
+                </svg>
+                Export to CSV
+            </a>
+            <a href="#" id="importBtn" class="action-link">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                    <path d="M8 4l4 4h-2.5v5h-3V8H4l4-4z"/>
+                    <path d="M14 13v1H2v-1h12z"/>
+                </svg>
+                Import from CSV
+            </a>
+        </div>
+
+        <script src="popup.js"></script>
+    </body>
+</html>

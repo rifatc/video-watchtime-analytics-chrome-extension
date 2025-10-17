@@ -39,11 +39,22 @@ function updatePopup() {
 
         const timeSaved = totalDuration - totalActual;
         const timeSavedPercentage = (timeSaved / totalDuration * 100).toFixed(2);
-        document.getElementById('totalStats').innerHTML = `
-            <p>Total Time Watched: ${formatTime(totalDuration)}</p>
-            <p>Total Actual Time Watched: ${formatTime(totalActual)}</p>
-            <p>Time Saved: ${formatTime(timeSaved)} (${timeSavedPercentage}%)</p>
-        `;
+        
+        // Safely create elements instead of using innerHTML
+        const totalStatsDiv = document.getElementById('totalStats');
+        totalStatsDiv.innerHTML = ''; // Clear existing content
+        
+        const p1 = document.createElement('p');
+        p1.textContent = `Total Time Watched: ${formatTime(totalDuration)}`;
+        totalStatsDiv.appendChild(p1);
+        
+        const p2 = document.createElement('p');
+        p2.textContent = `Total Actual Time Watched: ${formatTime(totalActual)}`;
+        totalStatsDiv.appendChild(p2);
+        
+        const p3 = document.createElement('p');
+        p3.textContent = `Time Saved: ${formatTime(timeSaved)} (${timeSavedPercentage}%)`;
+        totalStatsDiv.appendChild(p3);
     });
 }
 
@@ -70,11 +81,30 @@ function updateTable() {
 
 function updatePaginationControls() {
     const paginationDiv = document.getElementById('pagination');
-    paginationDiv.innerHTML = `
-        <button id="prevPage" ${currentPage === 1 ? 'disabled' : ''}><<</button>
-        <span>Page ${currentPage} of ${totalPages}</span>
-        <button id="nextPage" ${currentPage === totalPages ? 'disabled' : ''}>>></button>
-    `;
+    paginationDiv.innerHTML = ''; // Clear existing content
+    
+    // Create prev button
+    const prevButton = document.createElement('button');
+    prevButton.id = 'prevPage';
+    prevButton.textContent = '<<';
+    if (currentPage === 1) {
+        prevButton.disabled = true;
+    }
+    paginationDiv.appendChild(prevButton);
+    
+    // Create page span
+    const pageSpan = document.createElement('span');
+    pageSpan.textContent = `Page ${currentPage} of ${totalPages}`;
+    paginationDiv.appendChild(pageSpan);
+    
+    // Create next button
+    const nextButton = document.createElement('button');
+    nextButton.id = 'nextPage';
+    nextButton.textContent = '>>';
+    if (currentPage === totalPages) {
+        nextButton.disabled = true;
+    }
+    paginationDiv.appendChild(nextButton);
 
     document.getElementById('prevPage').addEventListener('click', () => {
         if (currentPage > 1) {

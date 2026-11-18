@@ -297,7 +297,10 @@ function renderSyncStatus(syncState) {
     }
     if (syncState.lastStatus === 'ok') {
         dot.className = 'sync-dot ok';
-        text.textContent = `Synced ${formatAgo(syncState.lastSuccessAt)}`;
+        // lastSource shows which path ran (manual/alarm/wake/poll/startup) —
+        // handy for confirming automatic syncing actually fires.
+        const via = syncState.lastSource ? ` · ${syncState.lastSource}` : '';
+        text.textContent = `Synced ${formatAgo(syncState.lastSuccessAt)}${via}`;
     } else {
         dot.className = 'sync-dot unavailable';
         // History is untouched on failure; the next successful push carries

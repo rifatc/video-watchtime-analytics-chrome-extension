@@ -47,6 +47,10 @@ function startPolling() {
     }
 
     pollingInterval = setInterval(() => {
+        // Time-gated inside sync.js (at most one attempt per 15 min). This is
+        // the reliable automatic path: the query below also keeps the worker
+        // alive, so it runs even when alarms/wakes wouldn't.
+        syncIfDue('poll');
         chrome.tabs.query({}, (tabs) => {
             tabs.forEach(tab => checkTabForVideo(tab.id));
         });

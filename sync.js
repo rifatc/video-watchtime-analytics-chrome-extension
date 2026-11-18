@@ -16,14 +16,16 @@ const SYNC_PERIOD_MINUTES = 15;
 const SYNC_TIMEOUT_MS = 10000;
 
 // Builds the export envelope (same shape as popup.js exportToJSON) with dates
-// sorted newest-first.
-function buildSyncPayload(history) {
+// sorted newest-first. `source` records what triggered the push ('manual',
+// 'alarm', 'startup', 'wake', 'poll') — echoed back in logs for debugging.
+function buildSyncPayload(history, source) {
     const sortedDates = Object.keys(history).sort((a, b) => new Date(b) - new Date(a));
     const payload = {
         exportDate: new Date().toISOString(),
         version: '2.0',
         data: {}
     };
+    if (source) payload.syncSource = source;
     sortedDates.forEach((date) => {
         payload.data[date] = history[date];
     });
@@ -57,11 +59,11 @@ function postHistory(payload) {
 
 // Runs one sync attempt. Resolves {ok: boolean}. On any failure the recorded
 // history and the previous lastSuccessAt are left untouched.
-async function runSync() {
+async function runSync(source) {
     const result = await readSyncData();
     const history = result.videoWatchHistory || {};
     const previous = result.syncState || {};
-    const payload = buildSyncPayload(history);
+    const payload = buildSyncPayload(history, source);
     const attemptAt = Date.now();
 
     let state;
@@ -72,14 +74,16 @@ async function runSync() {
                 lastSuccessAt: attemptAt,
                 lastAttemptAt: attemptAt,
                 lastStatus: 'ok',
-                lastError: null
+                lastError: null,
+                lastSource: source || 'manual'
             };
         } else {
             state = {
                 lastSuccessAt: previous.lastSuccessAt || 0,
                 lastAttemptAt: attemptAt,
                 lastStatus: 'unavailable',
-                lastError: `HTTP ${response.status}`
+                lastError: `HTTP ${response.status}`,
+                lastSource: source || 'manual'
             };
         }
     } catch (error) {
@@ -87,11 +91,14 @@ async function runSync() {
             lastSuccessAt: previous.lastSuccessAt || 0,
             lastAttemptAt: attemptAt,
             lastStatus: 'unavailable',
-            lastError: error && error.name === 'AbortError' ? 'timeout' : String((error && error.message) || error)
+            lastError: error && error.name === 'AbortError' ? 'timeout' : String((error && error.message) || error),
+            lastSource: source || 'manual'
         };
     }
 
     await writeSyncState(state);
+    // Visible via chrome://extensions -> "Inspect views: service worker".
+    console.debug(`[sync] push via ${state.lastSource} -> ${state.lastStatus}${state.lastError ? ` (${state.lastError})` : ''}`);
     return { ok: state.lastStatus === 'ok' };
 }
 
@@ -100,35 +107,44 @@ async function runSync() {
 // countdown; frequent event-driven worker starts could then starve it).
 function scheduleSync() {
     chrome.alarms.get(SYNC_ALARM_NAME, (existing) => {
-        if (chrome.runtime.lastError) return;
+        if (chrome.runtime.lastError) {
+            console.debug('[sync] alarm check failed:', chrome.runtime.lastError.message);
+            return;
+        }
         if (!existing) {
             chrome.alarms.create(SYNC_ALARM_NAME, { periodInMinutes: SYNC_PERIOD_MINUTES });
+            console.debug(`[sync] alarm scheduled every ${SYNC_PERIOD_MINUTES} minutes`);
+        } else {
+            console.debug('[sync] alarm already scheduled');
         }
     });
 }
 
-// Opportunistic sync on service-worker start, time-gated to at most one
-// attempt per period. Covers the window right after install/reload/update —
-// onStartup does not fire there, and waiting a full period for the first
-// alarm would leave the dashboard seemingly "not updating".
-async function syncIfDue() {
+// Opportunistic sync, time-gated to at most one attempt per period. Called on
+// worker start ('wake') and from the tab-polling loop ('poll') — the polling
+// path matters because Chrome API calls every 10s keep the worker alive
+// forever, which means it never suspends/wakes and alarms alone would have to
+// carry all automatic syncing.
+async function syncIfDue(source = 'wake') {
     const result = await readSyncData();
     const previous = result.syncState || {};
     const due = !previous.lastAttemptAt ||
         (Date.now() - previous.lastAttemptAt) >= SYNC_PERIOD_MINUTES * 60 * 1000;
     if (due) {
-        await runSync();
+        console.debug(`[sync] ${SYNC_PERIOD_MINUTES} min elapsed, syncing via ${source}`);
+        await runSync(source);
     }
 }
 
 chrome.runtime.onStartup.addListener(() => {
     scheduleSync();
-    runSync(); // catch up on any backlog accumulated while the browser was closed
+    runSync('startup'); // catch up on any backlog accumulated while the browser was closed
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === SYNC_ALARM_NAME) {
-        runSync();
+        console.debug('[sync] alarm fired');
+        runSync('alarm');
     }
 });
 

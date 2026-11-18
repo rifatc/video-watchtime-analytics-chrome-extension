@@ -198,8 +198,10 @@ export function createApp({ dataDir } = {}) {
                 const result = applySync(db, payload);
                 if (result.error) return jsonResponse({ status: "error", error: result.error }, 400);
                 // Visible in `docker logs watchtime-dashboard` — makes it easy
-                // to confirm the extension is actually reaching the server.
-                console.log(`[sync] stored ${result.days} days (${result.skipped} skipped)`);
+                // to confirm the extension is actually reaching the server,
+                // and via which trigger (syncSource: manual/alarm/wake/poll).
+                const via = payload && payload.syncSource ? ` via ${payload.syncSource}` : "";
+                console.log(`[sync] stored ${result.days} days (${result.skipped} skipped)${via}`);
                 return jsonResponse({ status: "ok", days: result.days, skipped: result.skipped });
             }
 

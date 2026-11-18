@@ -81,6 +81,7 @@ test('runSync posts the full history and records an ok state', async () => {
         lastAttemptAt: NOW_MS,
         lastStatus: 'ok',
         lastError: null,
+        lastSource: 'manual',
     });
     assert.equal(sb.setCalls.length, 1, 'only syncState is written');
 });
@@ -107,6 +108,7 @@ test('failed sync marks unavailable, preserves lastSuccessAt, touches no history
         lastAttemptAt: NOW_MS,
         lastStatus: 'unavailable',
         lastError: 'ECONNREFUSED: app not running',
+        lastSource: 'manual',
     });
     assert.deepEqual(sb.storeData.videoWatchHistory, before, 'history must be untouched on failure');
     assert.equal(sb.setCalls.length, 1);
@@ -227,6 +229,23 @@ test('syncIfDue syncs when no attempt has been recorded yet', async () => {
 
     assert.equal(sb.fetchCalls.length, 1, 'fresh install/reload must sync without waiting for the alarm');
     assert.equal(sb.storeData.syncState.lastStatus, 'ok');
+    assert.equal(sb.storeData.syncState.lastSource, 'wake');
+});
+
+test('trigger source flows into the payload and recorded state', async () => {
+    const sb = createSyncSandbox({ startMs: NOW_MS, storage: { videoWatchHistory: { '2026-11-18': day(1, 1) } } });
+
+    await sb.sandbox.runSync('poll');
+
+    const body = JSON.parse(sb.fetchCalls[0].options.body);
+    assert.equal(body.syncSource, 'poll');
+    assert.equal(sb.storeData.syncState.lastSource, 'poll');
+});
+
+test('manual sync payload stays identical to the export envelope (no source field)', () => {
+    const sb = createSyncSandbox({ startMs: NOW_MS });
+    const payload = sb.sandbox.buildSyncPayload({ '2026-11-18': day(1, 1) });
+    assert.equal(payload.syncSource, undefined);
 });
 
 test('syncIfDue skips when the last attempt is fresh', async () => {

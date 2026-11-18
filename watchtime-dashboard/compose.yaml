@@ -1,0 +1,15 @@
+# Runs via the machine's default docker context (Kiri on this machine).
+# Published to loopback only — the dashboard and its sync API are private.
+name: watchtime-dashboard
+
+services:
+  watchtime-dashboard:
+    build: .
+    image: watchtime-dashboard:latest
+    container_name: watchtime-dashboard
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8420:3000"
+    volumes:
+      - ./data:/data
+    mem_limit: 128m

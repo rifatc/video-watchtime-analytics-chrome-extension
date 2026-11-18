@@ -1,0 +1,386 @@
+/* Video Watchtime Dashboard — dark theme matching the extension popup. */
+
+:root {
+    --bg: #1e1e24;
+    --panel: #252530;
+    --panel-raised: #2a2a35;
+    --panel-hover: #323245;
+    --text: #e0e0e0;
+    --text-dim: #9aa0b5;
+    --accent: #6ea8fe;
+    --green: #4cc990;
+    --border: rgba(70, 70, 90, 0.3);
+    --inset-shadow: inset 3px 3px 7px rgba(0, 0, 0, 0.5), inset -3px -3px 7px rgba(70, 70, 90, 0.3);
+    --drop-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5), -4px -4px 8px rgba(70, 70, 90, 0.3);
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", system-ui, sans-serif;
+    font-size: 14px;
+}
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: rgba(30, 30, 36, 0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+h1 { font-size: 18px; margin: 0; letter-spacing: 0.3px; }
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.range-selector {
+    display: flex;
+    gap: 6px;
+    background: var(--panel);
+    padding: 4px;
+    border-radius: 10px;
+    box-shadow: var(--inset-shadow);
+}
+
+.range-selector button {
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.range-selector button:hover { color: var(--text); }
+
+.range-selector button.active {
+    background: var(--panel-raised);
+    color: var(--text);
+    box-shadow: var(--drop-shadow);
+}
+
+.last-sync { font-size: 12px; color: var(--text-dim); }
+
+main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 18px 20px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.panel {
+    background: var(--panel);
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: var(--inset-shadow);
+}
+
+.panel h2 {
+    margin: 2px 0 12px;
+    font-size: 14px;
+    color: var(--text);
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.panel h2 .sub { font-size: 12px; color: var(--text-dim); font-weight: 400; }
+
+/* --- Summary cards ------------------------------------------------------- */
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+}
+
+.card {
+    background: var(--panel);
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: var(--inset-shadow);
+}
+
+.card h3 {
+    margin: 0 0 10px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-dim);
+}
+
+.metric {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 6px 0;
+    flex-wrap: wrap; /* tight cards drop the trailing stat below instead of breaking values */
+    row-gap: 2px;
+}
+
+.metric .value { font-size: 20px; font-weight: 650; color: var(--accent); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.metric.saved .value { color: var(--green); }
+
+.metric .label { font-size: 11px; color: var(--text-dim); white-space: nowrap; }
+.metric .extra { font-size: 11px; color: var(--text-dim); margin-left: auto; white-space: nowrap; }
+
+/* --- Charts --------------------------------------------------------------- */
+
+.chart-row {
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 16px;
+}
+
+@media (max-width: 860px) { .chart-row { grid-template-columns: 1fr; } }
+
+.chart-wrap { position: relative; height: 260px; }
+
+.note { font-size: 11px; color: var(--text-dim); margin: 8px 0 0; }
+.hidden { display: none; }
+
+/* --- Heatmap -------------------------------------------------------------- */
+
+.heatmap-scroll { overflow-x: auto; padding-bottom: 4px; }
+
+/* Full-width layout: the week columns share the remaining panel width
+   (weekday gutter stays fixed), so cells become slightly wider rectangles. */
+.heatmap-flex { display: flex; gap: 6px; width: 100%; }
+
+.weekday-labels {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 9px;
+    color: var(--text-dim);
+    flex-shrink: 0;
+    /* 14px month-label row + 3px grid gap -> aligns with the first day row */
+    padding-top: 17px;
+}
+
+.weekday-labels span { height: 11px; line-height: 11px; }
+
+.heatmap-grid {
+    display: grid;
+    flex: 1;
+    min-width: 0;
+    grid-auto-flow: column;
+    grid-template-rows: 14px repeat(7, 11px);
+    grid-auto-columns: 1fr;
+    gap: 3px;
+}
+
+.heat-month {
+    font-size: 9px;
+    color: var(--text-dim);
+    line-height: 14px;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+.heat-cell {
+    height: 11px;
+    border-radius: 2px;
+    background: #161b22;
+    cursor: default;
+}
+
+.heat-cell.empty { visibility: hidden; }
+.heat-cell.l1 { background: #0e4429; }
+.heat-cell.l2 { background: #006d32; }
+.heat-cell.l3 { background: #26a641; }
+.heat-cell.l4 { background: #39d353; }
+
+.year-chips { display: flex; gap: 6px; }
+
+.year-chips button {
+    border: none;
+    background: var(--panel-raised);
+    color: var(--text-dim);
+    padding: 4px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 11px;
+    box-shadow: var(--drop-shadow);
+    transition: all 0.2s;
+}
+
+.year-chips button.active { color: var(--text); background: var(--panel-hover); }
+
+.heatmap-footer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    justify-content: flex-end;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--text-dim);
+}
+
+.legend { display: flex; gap: 3px; }
+
+.legend .heat-cell { width: 10px; height: 10px; }
+
+/* --- Hourly heatmap (rows = hours 0-23, columns = days) --------------------- */
+
+.hourly-outer { display: flex; gap: 6px; }
+
+.hourly-scroll { overflow-x: auto; padding-bottom: 2px; }
+
+.hour-gutter {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex-shrink: 0;
+    /* 14px month-label row + 3px grid gap -> aligns with the first hour row */
+    padding-top: 17px;
+}
+
+.hour-gutter span {
+    height: 11px;
+    line-height: 11px;
+    font-size: 9px;
+    color: var(--text-dim);
+    text-align: right;
+    padding-right: 5px;
+    font-variant-numeric: tabular-nums;
+}
+
+.hourly-months,
+.hourly-grid,
+.hourly-dayticks {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 11px;
+    gap: 3px;
+    width: max-content;
+}
+
+.hourly-months { grid-template-rows: 14px; margin-bottom: 3px; }
+.hourly-grid { grid-template-rows: repeat(24, 11px); }
+.hourly-dayticks { grid-template-rows: 14px; margin-top: 3px; }
+
+.hh-month-label,
+.hh-day-label {
+    font-size: 9px;
+    color: var(--text-dim);
+    line-height: 14px;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+.hh-cell {
+    width: 11px;
+    height: 11px;
+    border-radius: 2px;
+    background: #161b22;
+    cursor: default;
+}
+
+.hh-cell.l1 { background: #0e4429; }
+.hh-cell.l2 { background: #006d32; }
+.hh-cell.l3 { background: #26a641; }
+.hh-cell.l4 { background: #39d353; }
+
+/* --- History table --------------------------------------------------------- */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-variant-numeric: tabular-nums;
+}
+
+th {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-dim);
+    font-weight: 600;
+}
+
+td.saved-cell { color: var(--green); }
+td.pct-cell { color: var(--text-dim); }
+
+tbody tr:hover { background: rgba(255, 255, 255, 0.03); }
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--text-dim);
+}
+
+.pagination button {
+    border: none;
+    background: var(--panel-raised);
+    color: var(--text);
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    box-shadow: var(--drop-shadow);
+    transition: all 0.2s;
+}
+
+.pagination button:disabled { opacity: 0.4; cursor: default; }
+.pagination button:hover:not(:disabled) { background: var(--panel-hover); }
+
+/* --- Tooltip ---------------------------------------------------------------- */
+
+.tooltip {
+    position: fixed;
+    z-index: 50;
+    background: var(--panel-hover);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 12px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    box-shadow: var(--drop-shadow);
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.tooltip .tip-date { color: var(--text-dim); font-size: 11px; }
+
+footer {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px 26px;
+    font-size: 11px;
+    color: var(--text-dim);
+    text-align: center;
+}

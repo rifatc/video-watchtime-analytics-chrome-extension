@@ -1,3 +1,10 @@
+// Dashboard sync (periodic history pushes with offline backlog).
+importScripts('sync.js');
+
+// Opportunistic catch-up on every service-worker start (time-gated inside
+// sync.js so frequent event-driven wakes don't spam the endpoint).
+syncIfDue();
+
 function checkTabForVideo(tabId) {
     chrome.tabs.get(tabId, (tab) => {
         // Check for errors (e.g., tab was closed or doesn't exist)

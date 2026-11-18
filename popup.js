@@ -275,6 +275,44 @@ function importFromJSON() {
     }, {once: true}); // Use once:true to prevent multiple event handlers
 }
 
+// --- Dashboard sync status ---------------------------------------------------
+
+function formatAgo(timestamp) {
+    const seconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
+    if (seconds < 60) return 'just now';
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes} min ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours}h ago`;
+    return `${Math.floor(hours / 24)}d ago`;
+}
+
+function renderSyncStatus(syncState) {
+    const dot = document.getElementById('syncDot');
+    const text = document.getElementById('syncStatusText');
+    if (!syncState || !syncState.lastAttemptAt) {
+        dot.className = 'sync-dot unknown';
+        text.textContent = 'Sync: not yet';
+        return;
+    }
+    if (syncState.lastStatus === 'ok') {
+        dot.className = 'sync-dot ok';
+        text.textContent = `Synced ${formatAgo(syncState.lastSuccessAt)}`;
+    } else {
+        dot.className = 'sync-dot unavailable';
+        // History is untouched on failure; the next successful push carries
+        // the whole backlog, so "retrying" is all the user needs to know.
+        const last = syncState.lastSuccessAt ? ` · ok ${formatAgo(syncState.lastSuccessAt)}` : '';
+        text.textContent = `Dashboard unavailable — retrying${last}`;
+    }
+}
+
+function refreshSyncStatus() {
+    chrome.storage.local.get(['syncState'], function(result) {
+        renderSyncStatus(result.syncState);
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // Use the existing pagination div from HTML instead of creating a new one
     const paginationDiv = document.getElementById('pagination');
@@ -298,4 +336,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add event listeners for export and import buttons
     document.getElementById('exportBtn').addEventListener('click', exportToJSON);
     document.getElementById('importBtn').addEventListener('click', importFromJSON);
+
+    // Dashboard sync: show current status, live-update when the background
+    // worker records an attempt, and offer a manual push.
+    refreshSyncStatus();
+    chrome.storage.onChanged.addListener(function(changes, area) {
+        if (area === 'local' && changes.syncState) {
+            renderSyncStatus(changes.syncState.newValue);
+        }
+    });
+
+    const syncButton = document.getElementById('syncNowBtn');
+    syncButton.addEventListener('click', () => {
+        syncButton.disabled = true;
+        document.getElementById('syncDot').className = 'sync-dot syncing';
+        document.getElementById('syncStatusText').textContent = 'Syncing…';
+        chrome.runtime.sendMessage({ action: 'syncNow' }, function() {
+            // The background service worker may be suspended in MV3; if the
+            // message can't be delivered, refresh the stored state instead
+            // of leaving the button stuck.
+            if (chrome.runtime.lastError) console.debug(chrome.runtime.lastError.message);
+            syncButton.disabled = false;
+            refreshSyncStatus();
+        });
+    });
 });

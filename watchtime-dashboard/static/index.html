@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Video Watchtime Dashboard</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <h1>Video Watchtime</h1>
+            <div class="header-right">
+                <div id="rangeSelector" class="range-selector">
+                    <button data-range="7">7d</button>
+                    <button data-range="30" class="active">30d</button>
+                    <button data-range="90">90d</button>
+                    <button data-range="365">1y</button>
+                    <button data-range="all">All</button>
+                </div>
+                <span id="lastSync" class="last-sync"></span>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="summaryCards" class="cards"></section>
+
+        <section class="chart-row">
+            <div class="panel">
+                <h2>Watch time over time <span class="sub" id="dailyChartSub"></span></h2>
+                <div class="chart-wrap"><canvas id="dailyChart"></canvas></div>
+            </div>
+            <div class="panel">
+                <h2>Time of day</h2>
+                <div class="chart-wrap"><canvas id="hourlyChart"></canvas></div>
+                <p id="hourlyNote" class="note hidden">
+                    Hourly detail only exists for days tracked after the byHour feature
+                    landed; older days count toward the daily totals above but not here.
+                </p>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2>
+                Hourly heatmap
+                <span class="sub" id="hourlyHeatSub"></span>
+            </h2>
+            <div class="hourly-outer">
+                <div id="hourlyHeatHours" class="hour-gutter"></div>
+                <div class="heatmap-scroll hourly-scroll">
+                    <div id="hourlyHeatMonths" class="hourly-months"></div>
+                    <div id="hourlyHeatmap" class="hourly-grid"></div>
+                    <div id="hourlyHeatTicks" class="hourly-dayticks"></div>
+                </div>
+            </div>
+            <div class="heatmap-footer">
+                <span>Less</span>
+                <div id="hourlyHeatLegend" class="legend"></div>
+                <span>More</span>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2>
+                Activity heatmap
+                <span class="year-chips" id="heatmapYears"></span>
+            </h2>
+            <div class="heatmap-scroll"><div class="heatmap-flex" id="heatmap"></div></div>
+            <div class="heatmap-footer">
+                <span>Less</span>
+                <div id="heatmapLegend" class="legend"></div>
+                <span>More</span>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2>History</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Watch Duration</th>
+                        <th>Actual Watched</th>
+                        <th>Time Saved</th>
+                        <th>Saved</th>
+                    </tr>
+                </thead>
+                <tbody id="historyBody"></tbody>
+            </table>
+            <div id="historyPagination" class="pagination"></div>
+        </section>
+    </main>
+
+    <div id="tooltip" class="tooltip hidden"></div>
+    <footer>Synced from the Video Analytics extension &middot; all data stays on this machine</footer>
+
+    <script src="/static/vendor/chart.umd.min.js"></script>
+    <script src="/static/dashboard.js"></script>
+</body>
+</html>
